@@ -52,5 +52,42 @@ http://localhost:8080/会怎样，我们发现区别不大，只是比http://loc
 webpack-dev-server --inline
 ```
 
-然后修改js文件内容，我们发现生产环境也立刻刷新了
+然后修改js文件内容，我们发现生产环境也立刻刷新了.
+
+## 多文件编译
+
+我们在basic工程的基础上修改后就可以，修改后的工程叫multiple
+
+我们打开index.js，加入一行
+```
+require('./req.js');
+```
+
+新加req.js文件
+内容为：
+```
+console.log("common req");
+document.write("common req");
+```
+
+如果服务还开着，服务器上我们就能看到req.js输出的内容了，太棒了，我们只是用了webpack，就支持了commonjs规范和之前上个例子所聊到的特性，那我们就和写后端一样的写前端了。后面我们再总结一下看webpack究竟给我们带来了什么。
+
+不要高兴太早，我们打开bundle.js，发现里面根本没合并进req.js的内容，那是怎么回事呢，其实weppack把内容存在内存中了，我们只是访问到内存中的内容。而要确实打包进入我们的目标文件，我们应该通过第二种方式，通过配置文件来完成。配置文件中entry字段作为输入文件的配置，单个文件是一个字符串，那么多个文件就应该是个数组了吧。对的就是这样
+```
+module.exports = {
+	entry: ['./index.js', './misc.js'],
+	output: {
+		filename: 'bundle.js'
+	}
+};
+```
+
+新加的文件misc.js内容
+```
+console.log("I'm a misc");
+document.write(" I'm a misc");
+
+```
+
+完成后，我们重启服务即可
 
